@@ -28,9 +28,8 @@ namespace ProseTutorial
                 var input = inputState[rule.Body[0]] as string;  
                 //Get the output value
                 var output = example.Value as string;
-                //TODO refine the example for the Substring operator into an example for the pos parameter
-                //var refinedExample = ...
-                //result[inputState] = refinedExample; 
+                var refinedExample = input.IndexOf(output);
+                result[inputState] = refinedExample; 
             }
             return new ExampleSpec(result);
         }
@@ -38,7 +37,16 @@ namespace ProseTutorial
         [WitnessFunction("Substring", 2)]
         public static ExampleSpec WitnessEndPosition(GrammarRule rule, int parameter, ExampleSpec spec)
         {
-            throw  new NotImplementedException();
+            var result = new Dictionary<State, object>();
+            foreach (var example in spec.Examples)
+            {
+                State inputState = example.Key;
+                var input = inputState[rule.Body[0]] as string;
+                var output = example.Value as string;
+                var refinedExample = input.IndexOf(output) + output.Length;
+                result[inputState] = refinedExample;
+            }
+            return new ExampleSpec(result);
         }
 
         [WitnessFunction("AbsPos", 0)]
