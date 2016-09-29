@@ -13,6 +13,16 @@ namespace ProseTutorial
 {
     public static class WitnessFunctions
     {
+
+        public static Regex[] UsefulRegexes = {
+    new Regex(@"\w+"),  // Word
+	new Regex(@"\d+"),  // Number
+    new Regex(@"\s+"),  // Space
+    new Regex(@".+"),  // Anything
+    new Regex(@"$")  // End of line
+};
+
+
         [WitnessFunction("Substring", 1)]
         public static ExampleSpec WitnessStartPosition(GrammarRule rule, int parameter, ExampleSpec spec)
         {
@@ -67,6 +77,24 @@ namespace ProseTutorial
                 result[inputState] = output;
             }
             return new ExampleSpec(result);
+        }
+
+        [WitnessFunction("RelPos", 1)]
+        public static DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, int parameter, ExampleSpec spec)
+        {
+            var result = new Dictionary<State, IEnumerable<object>>();
+            foreach (var example in spec.Examples)
+            {
+                State inputState = example.Key;
+                var input = inputState[rule.Body[0]] as string;
+                var output = (int)example.Value;
+
+                //TODO: Implement a brute-force approach to generate all possible pairs of regex and test
+                //TODO: test whether each generated pair outputs the correct index by calling Semantics.RelPos(...)
+                var regexes = new List<Tuple<Regex, Regex>>();
+                result[inputState] = regexes;
+            }
+            return DisjunctiveExamplesSpec.From(result);
         }
     }
 }
