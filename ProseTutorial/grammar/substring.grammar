@@ -1,0 +1,15 @@
+﻿reference 'ProseTutorial.dll';
+
+using semantics ProseTutorial.Semantics; 
+
+using learners ProseTutorial.WitnessFunctions;
+
+language Substring;
+
+@input string x;
+
+@start string program := Substring(x, pos, pos);
+int pos := AbsPos(k) | RelPos(x,rr);
+
+int k; 
+Tuple<Regex,Regex> rr; 
