@@ -16,9 +16,9 @@ namespace ProseTutorial
         public static Regex[] UsefulRegexes = {
     new Regex(@"\w+"),  // Word
 	new Regex(@"\d+"),  // Number
-    new Regex(@"\s+"),  // Number
+    new Regex(@"\s+"),  // Space
     new Regex(@".+"),  // Anything
-    new Regex(@"$")  // Anything
+    new Regex(@"$")  // End of line
 };
 
         [WitnessFunction("Substring", 1)]
