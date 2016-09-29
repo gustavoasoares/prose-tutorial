@@ -25,6 +25,20 @@ namespace ProseTutorial
             Assert.AreEqual("Hartmann", output);
         }
 
+        [TestMethod] public void TestLearnSubstringSingleExample()
+        {
+            var grammar = DSLCompiler.
+                LoadGrammarFromFile("../../grammar/substring.grammar");
+
+            SynthesisEngine prose = new SynthesisEngine(grammar.Value);
+
+            var input = State.Create(grammar.Value.InputSymbol, "Bjoern Hartmann");
+            var examples = new Dictionary<State, object> { { input, "Hartmann" }};
+            var spec = new ExampleSpec(examples);
+            var learnedSet = prose.LearnGrammar(spec);
+            var output = learnedSet.RealizedPrograms.First().Invoke(input) as string;
+            Assert.AreEqual("Hartmann", output);
+        }
 
         [TestMethod]
         public void TestLearnSubstring()
