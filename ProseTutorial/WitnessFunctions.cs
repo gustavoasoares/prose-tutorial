@@ -11,8 +11,9 @@ using Microsoft.ProgramSynthesis.Learning;
 
 namespace ProseTutorial
 {
-    public static class WitnessFunctions
+    public class WitnessFunctions : DomainLearningLogic
     {
+        public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         public static Regex[] UsefulRegexes = {
     new Regex(@"\w+"),  // Word
@@ -23,8 +24,8 @@ namespace ProseTutorial
 };
 
 
-        [WitnessFunction("Substring", 1)]
-        public static ExampleSpec WitnessStartPosition(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.Substring), 1)]
+        public ExampleSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec)
         {
             //a result of a witness function is a refined example-based specication 
             //Each example is a map from an input state (State) to an output value (object)
@@ -44,8 +45,8 @@ namespace ProseTutorial
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction("Substring", 2)]
-        public static ExampleSpec WitnessEndPosition(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.Substring), 2)]
+        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec)
         {
             var result = new Dictionary<State, object>();
             foreach (var example in spec.Examples)
@@ -59,8 +60,8 @@ namespace ProseTutorial
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction("AbsPos", 0)]
-        public static ExampleSpec WitnessK(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.AbsPos), 0)]
+        public ExampleSpec WitnessK(GrammarRule rule, ExampleSpec spec)
         {
             //The example for Abs pos has the form:
             // (string) -> int
@@ -79,8 +80,8 @@ namespace ProseTutorial
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction("RelPos", 1)]
-        public static DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.RelPos), 1)]
+        public DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, ExampleSpec spec)
         {
             var result = new Dictionary<State, IEnumerable<object>>();
             foreach (var example in spec.Examples)

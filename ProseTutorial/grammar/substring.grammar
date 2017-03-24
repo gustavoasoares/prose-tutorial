@@ -1,6 +1,6 @@
-﻿﻿reference 'ProseTutorial.dll';
+﻿#reference 'file:ProseTutorial.dll';
 
-using semantics ProseTutorial.Semantics; 
+using semantics ProseTutorial.Semantics;
 
 using learners ProseTutorial.WitnessFunctions;
 
