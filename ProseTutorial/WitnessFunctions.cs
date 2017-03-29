@@ -101,6 +101,7 @@ namespace ProseTutorial
                 regexes.AddRange(from l in leftRegex
                                  from r in rightRegex
                                  select Tuple.Create(l.Item2, r.Item2));
+                regexes = regexes.Where(rr => output == Semantics.RelPos(input, rr)).ToList();
                 result[inputState] = regexes;
             }
             return DisjunctiveExamplesSpec.From(result);
