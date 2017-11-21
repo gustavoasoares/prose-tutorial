@@ -10,10 +10,7 @@ namespace ProseTutorial
 {
     public static class Semantics
     {
-      public static string Substring(string x, int? start, int? end)
-        {
-            return x.Substring((int)start, (int)end - (int)start);
-        }
+        public static string Substring(string x, int? start, int? end) => x.Substring((int)start, (int)end - (int)start);
 
         public static int? AbsPos(int k)
         {

@@ -1,10 +1,11 @@
 ﻿#reference 'file:ProseTutorial.dll';
-
 using semantics ProseTutorial.Semantics;
-
 using learners ProseTutorial.WitnessFunctions;
 
 language Substring;
+
+@complete feature double Score = ProseTutorial.RankingScore;
+
 
 @input string x;
 
