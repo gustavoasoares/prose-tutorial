@@ -22,9 +22,9 @@ namespace ProseTutorial
                 ParseGrammarFromFile("../../grammar/substring.grammar");
             var program = ProgramNode.Parse("Substring(x, AbsPos(7), AbsPos(15))",
                 grammar.Value,
-                ASTSerializationFormat.HumanReadable);
+                ASTSerializationFormat.XML);
 
-            var input = State.Create(grammar.Value.InputSymbol, "Bjoern Hartmann");
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Bjoern Hartmann");
             var output = program.Invoke(input) as string;
             Assert.AreEqual("Hartmann", output);
         }
@@ -36,7 +36,7 @@ namespace ProseTutorial
                 ParseGrammarFromFile("../../grammar/substring.grammar");
 
             var prose = ConfigureSynthesis(grammar.Value);
-            var input = State.Create(grammar.Value.InputSymbol, "Bjoern Hartmann");
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Bjoern Hartmann");
             var examples = new Dictionary<State, object> { { input, "Hartmann" } };
             var spec = new ExampleSpec(examples);
             var learnedSet = prose.LearnGrammar(spec);
@@ -52,8 +52,8 @@ namespace ProseTutorial
 
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var input = State.Create(grammar.Value.InputSymbol, "Bjoern Hartmann");
-            var input2 = State.Create(grammar.Value.InputSymbol, "Andrew Head");
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Bjoern Hartmann");
+            var input2 = State.CreateForExecution(grammar.Value.InputSymbol, "Andrew Head");
             var examples = new Dictionary<State, object> { { input, "Hartmann" }, { input2, "Head" } };
             var spec = new ExampleSpec(examples);
             var learnedSet = prose.LearnGrammar(spec);
@@ -72,7 +72,7 @@ namespace ProseTutorial
 
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var input = State.Create(grammar.Value.InputSymbol, "Bjoern Hartmann");
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Bjoern Hartmann");
             var examples = new Dictionary<State, object> { { input, "Hartmann" } };
             var spec = new ExampleSpec(examples);
             var learnedSet = prose.LearnGrammar(spec);
