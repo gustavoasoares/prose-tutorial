@@ -45,8 +45,7 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 var input = inputState[rule.Body[0]] as string;
                 var output = example.Value as string;
-                var refinedExample = input.IndexOf(output) + output.Length;
-                result[inputState] = refinedExample;
+                //TODO Finish this witness function 
             }
             return new ExampleSpec(result);
         }
@@ -59,7 +58,8 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 var v = inputState[rule.Body[0]] as string;
                 var pos = (int)example.Value;
-                result[inputState] = pos + 1;
+                //TODO Finish this witness function
+                //hint: k is an one-based Index while the string index is zero-based. 
             }
             return new ExampleSpec(result);
         }
