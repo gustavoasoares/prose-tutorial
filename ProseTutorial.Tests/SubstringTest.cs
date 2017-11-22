@@ -39,6 +39,31 @@ namespace ProseTutorial
         }
 
         [TestMethod]
+        public void TestLearnSubstringPositiveAbsPosSecOcurrence() {
+            //set up the grammar 
+            var grammar = DSLCompiler.
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+            var prose = ConfigureSynthesis(grammar.Value);
+
+            //create the example
+            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "5.5");
+            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "4.3");
+            var examples = new Dictionary<State, object> { { firstInput, "5" }, { secondInput, "3" } };
+            var spec = new ExampleSpec(examples);
+
+            //learn the set of programs that satisfy the spec 
+            var learnedSet = prose.LearnGrammar(spec);
+
+            //run the first synthesized program in the same input and check if 
+            //the output is correct
+            var programs = learnedSet.RealizedPrograms;
+            var output = programs.First().Invoke(firstInput) as string;
+            Assert.AreEqual("a", output);
+            output = programs.First().Invoke(secondInput) as string;
+            Assert.AreEqual("b", output);
+        }
+
+        [TestMethod]
         public void TestLearnSubstringNegativeAbsPos() {
             //set up the grammar 
             var grammar = DSLCompiler.
