@@ -95,18 +95,19 @@ namespace ProseTutorial
                 //all pairs of regular expressions that match this position. 
                 //you can use the auxiliar function bellow to get the regular expressions 
                 //that match each position in the input strng
-                //List<Regex>[] leftMatches, rightMatches;
-                //BuildStringMatches(input, out leftMatches, out rightMatches);
+                List<Regex>[] leftMatches, rightMatches;
+                BuildStringMatches(input, out leftMatches, out rightMatches);
+                var regexes = new List<Tuple<Regex, Regex>>();
 
-                //store the specs on the regexes variable 
-                //var regexes = new List<Tuple<Regex, Regex>>();
-                //var leftRegex = get all the left matches for the output position from the leftMatches list
-                //var rightRegex = get all the right matches for the output position from the rightMatches list
-                //if you don't find a match for the left of right regex, return null. No spec was found for rr
-                //if (leftRegex.Count == 0 || rightRegex.Count == 0)
-                //    return null;
-                //generate the cartesian product of the left and right regexes. For each pair, add it to the regexes list
-                //result[inputState] = regexes;
+
+                var leftRegex = leftMatches[output];
+                var rightRegex = rightMatches[output];
+                if (leftRegex.Count == 0 || rightRegex.Count == 0)
+                    return null;
+                regexes.AddRange(from l in leftRegex
+                                 from r in rightRegex
+                                 select Tuple.Create(l, r));
+                result[inputState] = regexes;
             }
             return DisjunctiveExamplesSpec.From(result);
         }
