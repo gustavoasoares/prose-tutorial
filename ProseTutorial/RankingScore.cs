@@ -19,6 +19,6 @@ namespace ProseTutorial
         public static double AbsPos(double v, double k) => k;
 
         [FeatureCalculator("k", Method = CalculationMethod.FromLiteral)]
-        public static double K(int k) => k >= 0 ? 1.0 / (k + 1.0) : 1.0 / (-k + 1.1);
+        public static double K(int k) => 1.0 / Math.Abs(k);
     }
 }
