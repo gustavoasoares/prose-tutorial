@@ -16,16 +16,16 @@ namespace ProseTutorial
     public class SubstringTest
     {
         [TestMethod]
-        public void TestLearnSubstringSingleExample()
+        public void TestLearnSubstringPositiveAbsPos()
         {
             //set up the grammar 
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../grammar/substring.grammar");
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
             var prose = ConfigureSynthesis(grammar.Value);
 
             //create the example
-            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
-            var examples = new Dictionary<State, object> { { input, "Soares" } };
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
+            var examples = new Dictionary<State, object> { { input, "Gustavo Soares" } };
             var spec = new ExampleSpec(examples);
 
             //learn the set of programs that satisfy the spec 
@@ -35,14 +35,67 @@ namespace ProseTutorial
             //the output is correct
             var programs = learnedSet.RealizedPrograms;
             var output = programs.First().Invoke(input) as string;
-            Assert.AreEqual("Soares", output);
+            Assert.AreEqual("Gustavo Soares", output);
+        }
+
+        [TestMethod]
+        public void TestLearnSubstringNegativeAbsPos() {
+            //set up the grammar 
+            var grammar = DSLCompiler.
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+            var prose = ConfigureSynthesis(grammar.Value);
+
+            //create the examples
+            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
+            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Titus Barik)");
+            var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares"}, { secondInput, "Titus Barik"}};
+            var spec = new ExampleSpec(examples);
+
+            //learn the set of programs that satisfy the spec 
+            var learnedSet = prose.LearnGrammar(spec);
+
+            //run the first synthesized program in the same input and check if 
+            //the output is correct
+            var programs = learnedSet.RealizedPrograms;
+            var output = programs.First().Invoke(firstInput) as string;
+            Assert.AreEqual("Gustavo Soares", output);
+            output = programs.First().Invoke(secondInput) as string;
+            Assert.AreEqual("Titus Barik", output);
+        }
+
+        [TestMethod]
+        public void TestLearnSubstringNegativeAbsPosRanking() {
+            //set up the grammar 
+            var grammar = DSLCompiler.
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+            var prose = ConfigureSynthesis(grammar.Value);
+
+            //create the example
+            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
+            var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares" }};
+            var spec = new ExampleSpec(examples);
+
+            //learn the set of programs that satisfy the spec 
+            var learnedSet = prose.LearnGrammar(spec);
+
+            //run the first synthesized program in the same input and check if 
+            //the output is correct
+            var scoreFeature = new RankingScore(grammar.Value);
+            var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 1, null);
+            var topProgram = topPrograms.First();
+
+            var output = topProgram.Invoke(firstInput) as string;
+            Assert.AreEqual("Gustavo Soares", output);
+            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Titus Barik)");
+            output = topProgram.Invoke(secondInput) as string;
+            Assert.AreEqual("Titus Barik", output);
         }
 
         [TestMethod]
         public void TestLearnSubstringTwoExamples()
         {
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../grammar/substring.grammar");
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
@@ -62,12 +115,12 @@ namespace ProseTutorial
         public void TestLearnSubstringOneExample()
         {
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../grammar/substring.grammar");
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
             var prose = ConfigureSynthesis(grammar.Value);
 
             var input = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
-
             var examples = new Dictionary<State, object> { { input, "Soares" }};
+
             var spec = new ExampleSpec(examples);
 
             var scoreFeature = new RankingScore(grammar.Value);

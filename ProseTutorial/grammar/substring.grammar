@@ -6,11 +6,10 @@ language Substring;
 
 @complete feature double Score = ProseTutorial.RankingScore;
 
+@input string v;
 
-@input string x;
-
-@start string program := Substring(x, pos, pos);
-int pos := AbsPos(k) | RelPos(x,rr);
+@start string program := Substring(v, pos, pos);
+int pos := AbsPos(v, k) | RelPos(v, rr);
 
 int k; 
 Tuple<Regex,Regex> rr; 

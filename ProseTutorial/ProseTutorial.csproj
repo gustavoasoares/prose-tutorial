@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="RankingScore.cs" />
     <Compile Include="Semantics.cs" />
-    <Compile Include="SubstringTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WitnessFunctions.cs" />
   </ItemGroup>
