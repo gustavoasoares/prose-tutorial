@@ -11,8 +11,9 @@ using Microsoft.ProgramSynthesis.Learning;
 
 namespace ProseTutorial
 {
-    public static class WitnessFunctions
+    public class WitnessFunctions : DomainLearningLogic
     {
+        public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         public static Regex[] UsefulRegexes = {
     new Regex(@"\w+"),  // Word
@@ -22,9 +23,8 @@ namespace ProseTutorial
     new Regex(@"$")  // End of line
 };
 
-
-        [WitnessFunction("Substring", 1)]
-        public static ExampleSpec WitnessStartPosition(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.Substring), 1)]
+        public ExampleSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec)
         {
             //a result of a witness function is a refined example-based specication 
             //Each example is a map from an input state (State) to an output value (object)
@@ -44,8 +44,8 @@ namespace ProseTutorial
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction("Substring", 2)]
-        public static ExampleSpec WitnessEndPosition(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.Substring), 2)]
+        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec)
         {
             var result = new Dictionary<State, object>();
             foreach (var example in spec.Examples)
@@ -59,32 +59,27 @@ namespace ProseTutorial
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction("AbsPos", 0)]
-        public static ExampleSpec WitnessK(GrammarRule rule, int parameter, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.AbsPos), 1)]
+        public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, ExampleSpec spec)
         {
-            //The example for Abs pos has the form:
-            // (string) -> int
-            // It maps an input string to an int value that represents an index in that string
-            var result = new Dictionary<State, object>();
-            foreach (var example in spec.Examples)
-            {
-                //Get the input state
+            var kExamples = new Dictionary<State, IEnumerable<object>>();
+            foreach (var example in spec.Examples) {
                 State inputState = example.Key;
-                //get the output example
-                var output = (int) example.Value;
-                //The example for Abs(k) is the sample example for k 
-                //Therefore, we just return the output value
-                result[inputState] = output;
+                var v = inputState[rule.Body[0]] as string;
+                var pos = (int)example.Value;
+
+                var positions = new List<object>();
+                positions.Add((int)pos + 1);
+                positions.Add((int)pos - (int)v.Length - 1);
+                kExamples[inputState] = positions;
             }
-            return new ExampleSpec(result);
+            return DisjunctiveExamplesSpec.From(kExamples);
         }
 
-        [WitnessFunction("RelPos", 1)]
-        public static DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, int parameter, ExampleSpec spec)
-        {
+        [WitnessFunction(nameof(Semantics.RelPos), 1)]
+        public DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, ExampleSpec spec) {
             var result = new Dictionary<State, IEnumerable<object>>();
-            foreach (var example in spec.Examples)
-            {
+            foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var input = inputState[rule.Body[0]] as string;
                 var output = (int)example.Value;
@@ -100,25 +95,22 @@ namespace ProseTutorial
                 regexes.AddRange(from l in leftRegex
                                  from r in rightRegex
                                  select Tuple.Create(l.Item2, r.Item2));
+                regexes = regexes.Where(rr => output == Semantics.RelPos(input, rr)).ToList();
                 result[inputState] = regexes;
             }
             return DisjunctiveExamplesSpec.From(result);
         }
 
         static void BuildStringMatches(string inp, out List<Tuple<Match, Regex>>[] leftMatches,
-                                       out List<Tuple<Match, Regex>>[] rightMatches)
-        {
+                                       out List<Tuple<Match, Regex>>[] rightMatches) {
             leftMatches = new List<Tuple<Match, Regex>>[inp.Length + 1];
             rightMatches = new List<Tuple<Match, Regex>>[inp.Length + 1];
-            for (int p = 0; p <= inp.Length; ++p)
-            {
+            for (int p = 0; p <= inp.Length; ++p) {
                 leftMatches[p] = new List<Tuple<Match, Regex>>();
                 rightMatches[p] = new List<Tuple<Match, Regex>>();
             }
-            foreach (Regex r in UsefulRegexes)
-            {
-                foreach (Match m in r.Matches(inp))
-                {
+            foreach (Regex r in UsefulRegexes) {
+                foreach (Match m in r.Matches(inp)) {
                     leftMatches[m.Index + m.Length].Add(Tuple.Create(m, r));
                     rightMatches[m.Index].Add(Tuple.Create(m, r));
                 }

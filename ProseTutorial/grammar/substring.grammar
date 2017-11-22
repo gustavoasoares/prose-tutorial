@@ -1,15 +1,15 @@
-﻿﻿reference 'ProseTutorial.dll';
-
-using semantics ProseTutorial.Semantics; 
-
+﻿#reference 'file:ProseTutorial.dll';
+using semantics ProseTutorial.Semantics;
 using learners ProseTutorial.WitnessFunctions;
 
 language Substring;
 
-@input string x;
+@complete feature double Score = ProseTutorial.RankingScore;
 
-@start string program := Substring(x, pos, pos);
-int pos := AbsPos(k) | RelPos(x,rr);
+@input string v;
+
+@start string program := Substring(v, pos, pos);
+int pos := AbsPos(v, k) | RelPos(v, rr);
 
 int k; 
 Tuple<Regex,Regex> rr; 
