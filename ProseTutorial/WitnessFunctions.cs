@@ -116,17 +116,17 @@ namespace ProseTutorial
                     //all pairs of regular expressions that match this position. 
                     //you can use the auxiliar function bellow to get the regular expressions 
                     //that match each position in the input strng
-                    List<Regex>[] leftMatches, rightMatches;
-                    BuildStringMatches(input, out leftMatches, out rightMatches);
+                    //List<Regex>[] leftMatches, rightMatches;
+                    //BuildStringMatches(input, out leftMatches, out rightMatches);
 
 
-                    var leftRegex = leftMatches[output];
-                    var rightRegex = rightMatches[output];
-                    if (leftRegex.Count == 0 || rightRegex.Count == 0)
-                        return null;
-                    regexes.AddRange(from l in leftRegex
-                                     from r in rightRegex
-                                     select Tuple.Create(l, r));
+                    //var leftRegex = leftMatches[output];
+                    //var rightRegex = rightMatches[output];
+                    //if (leftRegex.Count == 0 || rightRegex.Count == 0)
+                    //    return null;
+                    //regexes.AddRange(from l in leftRegex
+                    //                 from r in rightRegex
+                    //                 select Tuple.Create(l, r));
                 }
                 if (regexes.Count == 0) return null; 
                 result[inputState] = regexes;

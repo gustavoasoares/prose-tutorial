@@ -22,7 +22,7 @@ namespace ProseTutorial
         public static double K(int k) => 1.0 / Math.Abs(k);
 
         [FeatureCalculator(nameof(Semantics.RelPos))]
-        public static double RelPos(double x, double rr) => 1;
+        public static double RelPos(double x, double rr) => 0;
 
         [FeatureCalculator("rr", Method = CalculationMethod.FromLiteral)]
         public static double RR(Tuple<Regex, Regex> tuple) => 0;
