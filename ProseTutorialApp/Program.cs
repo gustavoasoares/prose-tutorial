@@ -57,7 +57,7 @@ namespace ProseTutorialApp {
 
         private static void LearnFromNewExample()
         {
-            Console.Out.WriteLine("Provide a new input-output example: (e.g., \"(Gustavo Soares)\",\"Gustavo Soares\")");
+            Console.Out.Write("Provide a new input-output example (e.g., \"(Gustavo Soares)\",\"Gustavo Soares\"): ");
             try
             {
                 string input = Console.ReadLine();
@@ -85,7 +85,7 @@ namespace ProseTutorialApp {
             Console.Out.WriteLine("Learning a program for examples:");
             foreach (var example in examples)
             {
-                Console.WriteLine(example.Key + "=>" + example.Value);
+                Console.WriteLine("\"" + example.Key.Bindings.First().Value + "\" -> \"" + example.Value + "\"");
             }
 
             var scoreFeature = new RankingScore(grammar);
@@ -116,15 +116,17 @@ namespace ProseTutorialApp {
                 Console.Out.WriteLine("No program was synthesized. Try to provide new examples first.");
                 return; 
             }
-
-            Console.Out.WriteLine("Insert a new input:");
-            var newInput = Console.ReadLine();
             Console.Out.WriteLine("Top program: " + topProgram);
-            Console.Out.WriteLine("Output of the top program on the new input: ");
+
             try
             {
+                Console.Out.Write("Insert a new input: ");
+                var newInput = Console.ReadLine();
+                var startFirstExample = newInput.IndexOf("\"") + 1;
+                var endFirstExample = newInput.IndexOf("\"", startFirstExample + 1) + 1;
+                newInput = newInput.Substring(startFirstExample, endFirstExample - startFirstExample - 1);
                 var newInputState = State.CreateForExecution(grammar.InputSymbol, newInput);
-                Console.Out.WriteLine(topProgram.Invoke(newInputState));
+                Console.Out.WriteLine("RESULT: \"" + newInput + "\" -> \"" + topProgram.Invoke(newInputState) + "\"");
             }
             catch (Exception)
             {
