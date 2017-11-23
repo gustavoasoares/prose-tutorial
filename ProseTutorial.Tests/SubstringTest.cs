@@ -24,8 +24,8 @@ namespace ProseTutorial
             var prose = ConfigureSynthesis(grammar.Value);
 
             //create the example
-            var input = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
-            var examples = new Dictionary<State, object> { { input, "Gustavo Soares" } };
+            var input = State.CreateForExecution(grammar.Value.InputSymbol, "19-Feb-1960");
+            var examples = new Dictionary<State, object> { { input, "Feb" } };
             var spec = new ExampleSpec(examples);
 
             //learn the set of programs that satisfy the spec 
@@ -35,7 +35,7 @@ namespace ProseTutorial
             //the output is correct
             var programs = learnedSet.RealizedPrograms;
             var output = programs.First().Invoke(input) as string;
-            Assert.AreEqual("Gustavo Soares", output);
+            Assert.AreEqual("Feb", output);
         }
 
         [TestMethod]
