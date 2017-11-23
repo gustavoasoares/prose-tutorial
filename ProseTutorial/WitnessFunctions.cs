@@ -99,7 +99,7 @@ namespace ProseTutorial
 
         /// <summary>
         /// This witness function deduces a spec on rr given the spec on its operator, RelPos
-        /// To do so, we need to learn a list of regular expressions that match to the left and to the right of given position. 
+        /// To do so, we need to learn a list of regular expressions that match to the left and to the right of a given position. 
         /// There are many techniques for doing that; in this tutorial, we assume that we have a predefined list of 
         /// “common” regexes like /[0-9]+/, and enumerate them exhaustively at a given position.
         /// </summary>
@@ -118,8 +118,8 @@ namespace ProseTutorial
                     //TODO, complete the witness function for the rr parameter. 
                     //Given the position in the output variable, you need to generate 
                     //all pairs of regular expressions that match this position. 
-                    
-                    //You can use the auxiliar function bellow to get the regular expressions 
+
+                    //You can use the auxiliary function bellow to get the regular expressions 
                     //that match each position in the input string
                     //Uncomment the code about to do so. 
                     //List<Regex>[] leftMatches, rightMatches;
@@ -133,11 +133,11 @@ namespace ProseTutorial
                     //if leftRegex or rightRegex is empty, we could not find a spec for this parameter in this input state    
                     //if (leftRegex.Count == 0 || rightRegex.Count == 0)
                     //    return null;
-                    
-                    //generate the crossproduct of the left and right regexes and for each pair, add it to the regexes list.
-                    
+
+                    //generate the cross product of the left and right regexes and for each pair, add it to the regexes list.
+
                 }
-                
+
                 if (regexes.Count == 0) return null; 
                 result[inputState] = regexes;
             }
@@ -145,7 +145,8 @@ namespace ProseTutorial
         }
 
         /// <summary>
-        /// This method returns the left and the right regular expressions that match each position in the input string
+        /// This method returns for each position in the input string the regular expressions that 
+        /// match to the left and to the right of the position.  
         /// </summary>
         /// <param name="inp"></param>
         /// <param name="leftMatches"></param>
