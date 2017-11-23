@@ -40,14 +40,13 @@ namespace ProseTutorial
                 var input = inputState[rule.Body[0]] as string;  
                 //Get the output value (e.g., "Gustavo Soares")
                 var output = example.Value as string;
-                //now we deduce a spec on the first position of the substring
-                //In this tutorial, for simplification, we consider just the first ocurrence of the substring
+                //now we deduce a spec on the position pair of the substring
                 ////////////////////////////////////////////////////////////////////////////////
                 //TODO uncomment the following code fragment to complete this witness function//
                 ////////////////////////////////////////////////////////////////////////////////
-                var start = input.IndexOf(output);
-                var end = input.IndexOf(output) + output.Length;
-                result[inputState] = Tuple.Create(start,end);
+                //var start = input.IndexOf(output);
+                //var end = input.IndexOf(output) + output.Length;
+                //result[inputState] = Tuple.Create(start,end);
             }
             return new ExampleSpec(result);
         }
@@ -60,7 +59,12 @@ namespace ProseTutorial
             {
                 State inputState = example.Key;
                 var output = example.Value as Tuple<int, int>;
-                result[inputState] = output.Item1;
+                //This witness function deduces the first position of the positionPair
+                //given an example of a position pair
+                ////////////////////////////////////////////////////////////////////////////////
+                //TODO uncomment the following code fragment to complete this witness function//
+                ////////////////////////////////////////////////////////////////////////////////
+                //result[inputState] = output.Item1;
             }
             return new ExampleSpec(result);
         }
@@ -71,7 +75,11 @@ namespace ProseTutorial
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var output = example.Value as Tuple<int, int>;
-                result[inputState] = output.Item2;
+                //This witness function deduces the second position of the positionPair
+                //given an example of a position pair
+                ////////////////////////////////////////////////////////////////////////////////
+                //TODO Complete this witness function//
+                ////////////////////////////////////////////////////////////////////////////////
             }
             return new ExampleSpec(result);
         }
@@ -84,7 +92,12 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 var v = inputState[rule.Body[0]] as string;
                 var pos = (int)example.Value;
-                result[inputState] = pos + 1;
+                //This witness function deduces an example for k given an example of a position
+                //While a position is a zero-based index, k is a one-based index 
+                ////////////////////////////////////////////////////////////////////////////////
+                //TODO Complete this witness function//
+                ////////////////////////////////////////////////////////////////////////////////
+                //result[inputState] = pos + 1;
             }
             return new ExampleSpec(result);
         }
