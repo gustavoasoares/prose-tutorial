@@ -65,20 +65,10 @@ namespace ProseTutorial {
             }
             return DisjunctiveExamplesSpec.From(result);
         }
-
-        /// <summary>
-        /// This witness function should deduce the spec for k given the spect for AbsPos     
-        /// </summary>
-        /// <param name="rule"></param>
-        /// <param name="spec"></param>
-        /// <returns>However, now we need to produce two possible specs for k (positive and negative)
-        /// given a single spec for AbsPos. A disjunction of possible specs has its own 
-        /// representative spec type in PROSE – DisjunctiveExamplesSpec.</returns>
+        
         [WitnessFunction(nameof(Semantics.AbsPos), 1)]
         public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, DisjunctiveExamplesSpec spec) {
 
-            //the spec on k for each input state will have type IEnumerable<object> since we will have 
-            //more than one possible output
             var kExamples = new Dictionary<State, IEnumerable<object>>();
             foreach (var example in spec.DisjunctiveExamples) {
                 State inputState = example.Key;
@@ -86,7 +76,6 @@ namespace ProseTutorial {
 
                 var positions = new List<int>();
                 foreach (int pos in example.Value) {
-                    //the positive spec for k
                     positions.Add((int)pos + 1);
                     positions.Add((int)pos - v.Length -1);
                 }
