@@ -13,7 +13,11 @@ namespace ProseTutorial
         protected override double GetFeatureValueForVariable(VariableNode variable) => 0;
 
         [FeatureCalculator(nameof(Semantics.Substring))]
-        public static double Substring(double v, double pos1, double pos2) => pos1 * pos2;
+        public static double Substring(double v, double pair) => pair;
+
+
+        [FeatureCalculator(nameof(Semantics.PositionPair))]
+        public static double PositionPair(double pos1, double pos2) => pos1 * pos2;
 
         [FeatureCalculator(nameof(Semantics.AbsPos))]
         public static double AbsPos(double v, double k) => k;
@@ -22,7 +26,7 @@ namespace ProseTutorial
         public static double K(int k) => 1.0 / Math.Abs(k);
 
         [FeatureCalculator(nameof(Semantics.RelPos))]
-        public static double RelPos(double x, double rr) => 0;
+        public static double RelPos(double x, double rr) => rr;
 
         //TODO update this ranking function to produce a higher value than the ones in AbsPos. 
         //In this way, the ranking system will favor RelPos over AbsPos.
