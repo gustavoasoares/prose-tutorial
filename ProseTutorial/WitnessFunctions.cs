@@ -16,16 +16,16 @@ namespace ProseTutorial
         public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         /// <summary>
-        /// This witness function  deduces a specification on the second parameter (index 1) of the Substring operator 
+        /// This witness function deduces a specification on the second parameter (index 1) of the Substring operator 
         /// given a specification on the entire Substring operator
         /// </summary>
         /// <param name="rule">The Substring operator's rule</param>
         /// <param name="spec">The specification for the Substring operator</param>
-        /// <returns>The specification for the first position on the Substring operator</returns>
+        /// <returns>The specification for the position pair parameter of the Substring operator</returns>
         [WitnessFunction(nameof(Semantics.Substring), 1)]
         public ExampleSpec WitnessPositionPair(GrammarRule rule, ExampleSpec spec)
         {
-            //a result of a witness function is a refined example-based specication 
+            //a result of a witness function is a refined example-based specification 
             //Each example is a map from an input state (State) to an output value (object)
             var result = new Dictionary<State, object>();
 
@@ -36,9 +36,9 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 // the first parameter of Substring is the input variable 'v'
                 // we extract its current bound value from the given input state
-                // (e.g., "(Gustavo Soares)")
+                // (e.g., "(19-Feb-1960)")
                 var input = inputState[rule.Body[0]] as string;  
-                //Get the output value (e.g., "Gustavo Soares")
+                //Get the output value (e.g., "Feb")
                 var output = example.Value as string;
                 //now we deduce a spec on the position pair of the substring
                 ////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ namespace ProseTutorial
                 //This witness function deduces an example for k given an example of a position
                 //While a position is a zero-based index, k is a one-based index 
                 ////////////////////////////////////////////////////////////////////////////////
-                //TODO Complete this witness function//
+                //TODO uncomment the following code fragment to complete this witness function//
                 ////////////////////////////////////////////////////////////////////////////////
                 //result[inputState] = pos + 1;
             }
