@@ -78,6 +78,7 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 var v = inputState[rule.Body[0]] as string;
                 var pos = (int)example.Value;
+                result[inputState] = pos + 1;
             }
             return new ExampleSpec(result);
         }
