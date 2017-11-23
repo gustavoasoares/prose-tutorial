@@ -27,8 +27,6 @@ namespace ProseTutorial
         public static double RelPos(double x, double rr) => rr;
 
         [FeatureCalculator("rr", Method = CalculationMethod.FromLiteral)]
-        //TODO update this ranking function to produce a higher value than the ones in AbsPos. 
-        //In this way, the ranking system will favor RelPos over AbsPos.
         public static double RR(Tuple<Regex, Regex> tuple) => 0;
 
     }
