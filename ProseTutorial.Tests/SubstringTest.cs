@@ -58,9 +58,9 @@ namespace ProseTutorial
             //the output is correct
             var programs = learnedSet.RealizedPrograms;
             var output = programs.First().Invoke(firstInput) as string;
-            Assert.AreEqual("a", output);
+            Assert.AreEqual("5", output);
             output = programs.First().Invoke(secondInput) as string;
-            Assert.AreEqual("b", output);
+            Assert.AreEqual("3", output);
         }
 
         [TestMethod]

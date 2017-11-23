@@ -9,41 +9,46 @@ using Microsoft.ProgramSynthesis.Rules;
 using Microsoft.ProgramSynthesis.Specifications;
 using Microsoft.ProgramSynthesis.Learning;
 
-namespace ProseTutorial
-{
-    public class WitnessFunctions : DomainLearningLogic
-    {
+namespace ProseTutorial {
+    public class WitnessFunctions : DomainLearningLogic {
         public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         [WitnessFunction(nameof(Semantics.Substring), 1)]
-        public ExampleSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec)
-        {
-            var result = new Dictionary<State, object>();
+        public DisjunctiveExamplesSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec) {
+            var result = new Dictionary<State, IEnumerable<object>>();
 
-            foreach (var example in spec.Examples)
-            {
-                State inputState = example.Key;
-                var input = inputState[rule.Body[0]] as string;  
-                var output = example.Value as string;
-                var refinedExample = input.IndexOf(output);
-                result[inputState] = refinedExample; 
-            }
-            return new ExampleSpec(result);
-        }
-
-        [WitnessFunction(nameof(Semantics.Substring), 2)]
-        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec)
-        {
-            var result = new Dictionary<State, object>();
-            foreach (var example in spec.Examples)
-            {
+            foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var input = inputState[rule.Body[0]] as string;
                 var output = example.Value as string;
-                var refinedExample = input.IndexOf(output) + output.Length;
-                result[inputState] = refinedExample;
+                var occurrences = new List<int>();
+
+                for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
+                    occurrences.Add((int)i);
+                }
+
+                if (occurrences.Count == 0) return null;
+                result[inputState] = occurrences.Cast<object>();
             }
-            return new ExampleSpec(result);
+            return new DisjunctiveExamplesSpec(result);
+
+        }
+
+        [WitnessFunction(nameof(Semantics.Substring), 2)]
+        public DisjunctiveExamplesSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec) {
+            var result = new Dictionary<State, IEnumerable<object>>();
+            foreach (var example in spec.Examples) {
+                State inputState = example.Key;
+                var input = inputState[rule.Body[0]] as string;
+                var output = example.Value as string;
+                var occurrences = new List<int>();
+                for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
+                    occurrences.Add(i + output.Length);
+                }
+                if (occurrences.Count == 0) return null;
+                result[inputState] = occurrences.Cast<object>();
+            }
+            return new DisjunctiveExamplesSpec(result);
         }
 
         /// <summary>
@@ -55,23 +60,25 @@ namespace ProseTutorial
         /// given a single spec for AbsPos. A disjunction of possible specs has its own 
         /// representative spec type in PROSE – DisjunctiveExamplesSpec.</returns>
         [WitnessFunction(nameof(Semantics.AbsPos), 1)]
-        public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, ExampleSpec spec) {
+        public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, DisjunctiveExamplesSpec spec) {
 
             //the spec on k for each input state will have type IEnumerable<object> since we will have 
             //more than one possible output
             var kExamples = new Dictionary<State, IEnumerable<object>>();
-            foreach (var example in spec.Examples) {
+            foreach (var example in spec.DisjunctiveExamples) {
                 State inputState = example.Key;
                 var v = inputState[rule.Body[0]] as string;
-                var pos = (int)example.Value;
 
-                var positions = new List<object>();
-                //the positive spec for k
-                positions.Add((int)pos + 1);
-                //TODO add the negative spec for k 
-                //uncomment the next statement and replace X by the expression that should return the negative spec
-                //positions.Add((int)pos - X);
-                kExamples[inputState] = positions;
+                var positions = new List<int>();
+                foreach (int pos in example.Value) {
+                    //the positive spec for k
+                    positions.Add((int)pos + 1);
+                    //TODO add the negative spec for k 
+                    //uncomment the next statement and replace X by the expression that should return the negative spec
+                    //positions.Add((int)pos - X);
+                }
+                if (positions.Count == 0) return null;
+                kExamples[inputState] = positions.Cast<object>();
             }
             return DisjunctiveExamplesSpec.From(kExamples);
         }
