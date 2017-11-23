@@ -95,15 +95,6 @@ namespace ProseTutorial {
             return DisjunctiveExamplesSpec.From(kExamples);
         }
 
-        /// <summary>
-        /// This witness function deduces a spec on rr given the spec on its operator, RelPos
-        /// To do so, we need to learn a list of regular expressions that match to the left and to the right of given position. 
-        /// There are many techniques for doing that; in this tutorial, we assume that we have a predefined list of 
-        /// “common” regexes like /[0-9]+/, and enumerate them exhaustively at a given position.
-        /// </summary>
-        /// <param name="rule"></param>
-        /// <param name="spec">The spec on RelPos, which is a position in the input string</param>
-        /// <returns></returns>
         [WitnessFunction(nameof(Semantics.RelPos), 1)]
         public DisjunctiveExamplesSpec WitnessRegexPair(GrammarRule rule, DisjunctiveExamplesSpec spec) {
             var result = new Dictionary<State, IEnumerable<object>>();
@@ -113,11 +104,6 @@ namespace ProseTutorial {
 
                 var regexes = new List<Tuple<Regex, Regex>>();
                 foreach (int output in example.Value) {
-                    //TODO, complete the witness function for the rr parameter. 
-                    //Given the position in the output variable above, you need to generate 
-                    //all pairs of regular expressions that match this position. 
-                    //you can use the auxiliar function bellow to get the regular expressions 
-                    //that match each position in the input strng
                     List<Regex>[] leftMatches, rightMatches;
                     BuildStringMatches(input, out leftMatches, out rightMatches);
 
@@ -136,12 +122,6 @@ namespace ProseTutorial {
             return DisjunctiveExamplesSpec.From(result);
         }
 
-        /// <summary>
-        /// This method returns the left and the right regular expressions that match each position in the input string
-        /// </summary>
-        /// <param name="inp"></param>
-        /// <param name="leftMatches"></param>
-        /// <param name="rightMatches"></param>
         static void BuildStringMatches(string inp, out List<Regex>[] leftMatches,
                                        out List<Regex>[] rightMatches) {
             leftMatches = new List<Regex>[inp.Length + 1];
