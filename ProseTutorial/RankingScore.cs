@@ -22,7 +22,9 @@ namespace ProseTutorial
         [FeatureCalculator(nameof(Semantics.AbsPos))]
         public static double AbsPos(double v, double k) => k;
 
-        [FeatureCalculator("k", Method = CalculationMethod.FromLiteral)]        
+        [FeatureCalculator("k", Method = CalculationMethod.FromLiteral)]
+        //TODO update the following ranking function 
+        //This ranking function should produce higher values for small absolute values of k
         public static double K(int k) => 1.0;
     }
 }
