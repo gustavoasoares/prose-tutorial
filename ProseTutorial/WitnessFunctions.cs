@@ -112,22 +112,28 @@ namespace ProseTutorial
                 var regexes = new List<Tuple<Regex, Regex>>();
                 foreach (int output in example.Value) {
                     //TODO, complete the witness function for the rr parameter. 
-                    //Given the position in the output variable above, you need to generate 
+                    //Given the position in the output variable, you need to generate 
                     //all pairs of regular expressions that match this position. 
-                    //you can use the auxiliar function bellow to get the regular expressions 
-                    //that match each position in the input strng
+                    
+                    //You can use the auxiliar function bellow to get the regular expressions 
+                    //that match each position in the input string
+                    //Uncomment the code about to do so. 
                     //List<Regex>[] leftMatches, rightMatches;
                     //BuildStringMatches(input, out leftMatches, out rightMatches);
 
+                    //Get the list of regexes that match the position 'output' from the leftMatches and rightMatches
+                    //by completing the next two lines. 
+                    //var leftRegex = ...
+                    //var rightRegex = ...
 
-                    //var leftRegex = leftMatches[output];
-                    //var rightRegex = rightMatches[output];
+                    //if leftRegex or rightRegex is empty, we could not find a spec for this parameter in this input state    
                     //if (leftRegex.Count == 0 || rightRegex.Count == 0)
                     //    return null;
-                    //regexes.AddRange(from l in leftRegex
-                    //                 from r in rightRegex
-                    //                 select Tuple.Create(l, r));
+                    
+                    //generate the crossproduct of the left and right regexes and for each pair, add it to the regexes list.
+                    
                 }
+                
                 if (regexes.Count == 0) return null; 
                 result[inputState] = regexes;
             }
