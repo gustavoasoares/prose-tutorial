@@ -16,13 +16,12 @@ namespace ProseTutorial
         public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         /// <summary>
-        /// A witness function is defined for one parameter of an operator, not the entire operator.
         /// This witness function  deduces a specification on the second parameter (index 1) of the Substring operator 
         /// given a specification on the entire Substring operator
         /// </summary>
         /// <param name="rule">The Substring operator's rule</param>
         /// <param name="spec">The specification for the Substring operator</param>
-        /// <returns></returns>
+        /// <returns>The specification for the first position on the Substring operator</returns>
         [WitnessFunction(nameof(Semantics.Substring), 1)]
         public ExampleSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec)
         {
@@ -43,7 +42,9 @@ namespace ProseTutorial
                 var output = example.Value as string;
                 //now we deduce a spec on the first position of the substring
                 //In this tutorial, for simplification, we consider just the first ocurrence of the substring
-                //TODO uncomment the following code fragment to complete this witness function
+                ////////////////////////////////////////////////////////////////////////////////
+                //TODO uncomment the following code fragment to complete this witness function//
+                ////////////////////////////////////////////////////////////////////////////////
                 //var refinedExample = input.IndexOf(output);
                 //result[inputState] = refinedExample;
             }
@@ -60,7 +61,9 @@ namespace ProseTutorial
                 var input = inputState[rule.Body[0]] as string;
                 var output = example.Value as string;
                 //similar to the previous witness fnction, we deduce a spec on the second position of the substring
-                //TODO uncomment the following code fragment to complete this witness function
+                ////////////////////////////////////////////////////////////////////////////////
+                //TODO uncomment the following code fragment to complete this witness function//
+                ////////////////////////////////////////////////////////////////////////////////
                 //var refinedExample = input.IndexOf(output) + output.Length;
                 //result[inputState] = refinedExample;
             }
@@ -75,10 +78,6 @@ namespace ProseTutorial
                 State inputState = example.Key;
                 var v = inputState[rule.Body[0]] as string;
                 var pos = (int)example.Value;
-                //Given the the specification for the operator AbsPos, which is a zero-based index in a string, 
-                //we deduce the spec on k, which is a one-based index. Therefore, we just need to add 1 to the index
-                //TODO uncomment the following code fragment to complete this witness function
-                //result[inputState] = pos + 1;
             }
             return new ExampleSpec(result);
         }
