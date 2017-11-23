@@ -23,7 +23,7 @@ namespace ProseTutorial
         /// <param name="spec">The specification for the Substring operator</param>
         /// <returns>The specification for the first position on the Substring operator</returns>
         [WitnessFunction(nameof(Semantics.Substring), 1)]
-        public ExampleSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec)
+        public ExampleSpec WitnessPositionPair(GrammarRule rule, ExampleSpec spec)
         {
             //a result of a witness function is a refined example-based specication 
             //Each example is a map from an input state (State) to an output value (object)
@@ -45,27 +45,33 @@ namespace ProseTutorial
                 ////////////////////////////////////////////////////////////////////////////////
                 //TODO uncomment the following code fragment to complete this witness function//
                 ////////////////////////////////////////////////////////////////////////////////
-                //var refinedExample = input.IndexOf(output);
-                //result[inputState] = refinedExample;
+                var start = input.IndexOf(output);
+                var end = input.IndexOf(output) + output.Length;
+                result[inputState] = Tuple.Create(start,end);
             }
             return new ExampleSpec(result);
         }
 
-        [WitnessFunction(nameof(Semantics.Substring), 2)]
-        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec)
+        [WitnessFunction(nameof(Semantics.PositionPair), 0)]
+        public ExampleSpec WitnessPositionPairStartPosition(GrammarRule rule, ExampleSpec spec)
         {
             var result = new Dictionary<State, object>();
             foreach (var example in spec.Examples)
             {
                 State inputState = example.Key;
-                var input = inputState[rule.Body[0]] as string;
-                var output = example.Value as string;
-                //similar to the previous witness fnction, we deduce a spec on the second position of the substring
-                ////////////////////////////////////////////////////////////////////////////////
-                //TODO uncomment the following code fragment to complete this witness function//
-                ////////////////////////////////////////////////////////////////////////////////
-                //var refinedExample = input.IndexOf(output) + output.Length;
-                //result[inputState] = refinedExample;
+                var output = example.Value as Tuple<int, int>;
+                result[inputState] = output.Item1;
+            }
+            return new ExampleSpec(result);
+        }
+
+        [WitnessFunction(nameof(Semantics.PositionPair), 1)]
+        public ExampleSpec WitnessPositionPairEndPosition(GrammarRule rule, ExampleSpec spec) {
+            var result = new Dictionary<State, object>();
+            foreach (var example in spec.Examples) {
+                State inputState = example.Key;
+                var output = example.Value as Tuple<int, int>;
+                result[inputState] = output.Item2;
             }
             return new ExampleSpec(result);
         }

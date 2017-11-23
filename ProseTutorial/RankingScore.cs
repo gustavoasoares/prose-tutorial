@@ -13,8 +13,12 @@ namespace ProseTutorial
         protected override double GetFeatureValueForVariable(VariableNode variable) => 0;
 
         [FeatureCalculator(nameof(Semantics.Substring))]
-        public static double Substring(double v, double pos1, double pos2) => pos1 * pos2;
+        public static double Substring(double v, double pair) => pair;
 
+
+        [FeatureCalculator(nameof(Semantics.PositionPair))]
+        public static double PositionPair(double pos1, double pos2) => pos1 * pos2;
+        
         [FeatureCalculator(nameof(Semantics.AbsPos))]
         public static double AbsPos(double v, double k) => k;
 
