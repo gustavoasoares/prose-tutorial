@@ -76,8 +76,8 @@ namespace ProseTutorial {
 
                 var positions = new List<int>();
                 foreach (int pos in example.Value) {
-                    positions.Add((int)pos + 1);
-                    positions.Add((int)pos - v.Length -1);
+                    positions.Add(pos + 1);
+                    positions.Add(pos - v.Length -1);
                 }
                 if (positions.Count == 0) return null;
                 kExamples[inputState] = positions.Cast<object>();
