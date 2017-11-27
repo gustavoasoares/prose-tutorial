@@ -85,7 +85,7 @@ namespace ProseTutorial
             var programs = learnedSet.RealizedPrograms;
             var output = programs.First().Invoke(firstInput) as string;
             Assert.AreEqual("16", output);
-            Assert.AreEqual(8, programs.Count());
+            Assert.AreEqual(16, programs.Count());
         }
 
 
