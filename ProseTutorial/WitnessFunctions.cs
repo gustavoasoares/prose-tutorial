@@ -34,26 +34,29 @@ namespace ProseTutorial {
 
         }
 
+        /// <summary>
+        /// This is a conditional witness function. In the presence of multiple occurrences of the output string in the input string,
+        /// We can only write a witness function for an end position for each start position. Thus, our witness function for the end position
+        /// is conditional on the start position: in addition to an outer spec, it takes an additional input – a spec on its prerequisite start position parameter.
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="spec"></param>
+        /// <param name="startSpec">The specification of the start position parameter</param>
+        /// <returns></returns>
         [WitnessFunction(nameof(Semantics.Substring), 2, DependsOnParameters = new []{1})]
         public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec, ExampleSpec startSpec) {
             var result = new Dictionary<State, object>();
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var output = example.Value as string;
+                //get the spec on the start position 
                 var start = (int)startSpec.Examples[inputState];
-                //result[inputState] = start + output.Length;
+                //TODO given the spec on the start position, write a spec on the end position
+                //result[inputState] = ...;
             }
             return new ExampleSpec(result);
         }
 
-        /// <summary>
-        /// This witness function should deduce the spec for k given the spec for AbsPos     
-        /// </summary>
-        /// <param name="rule"></param>
-        /// <param name="spec"></param>
-        /// <returns>However, now we need to produce two possible specs for k (positive and negative)
-        /// given a single spec for AbsPos. A disjunction of possible specs has its own 
-        /// representative spec type in PROSE – DisjunctiveExamplesSpec.</returns>
         [WitnessFunction(nameof(Semantics.AbsPos), 1)]
         public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, DisjunctiveExamplesSpec spec) {
             var kExamples = new Dictionary<State, IEnumerable<object>>();
@@ -63,11 +66,7 @@ namespace ProseTutorial {
 
                 var positions = new List<int>();
                 foreach (int pos in example.Value) {
-                    //the positive spec for k
                     positions.Add(pos + 1);
-                    //TODO add the negative spec for k 
-                    //uncomment the next statement and replace X by the expression that should return the negative spec
-                    //positions.Add(X);
                 }
                 if (positions.Count == 0) return null;
                 kExamples[inputState] = positions.Cast<object>();
