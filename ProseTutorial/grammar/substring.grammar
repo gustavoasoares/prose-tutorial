@@ -8,9 +8,7 @@ language Substring;
 
 @input string v;
 
-@start string program := Substring(v, posPair);
-
-Tuple<int, int> posPair := PositionPair(pos, pos);    
+@start string program := Substring(v, pos, pos);
 
 int pos := AbsPos(v, k) | RelPos(v, rr);
 
