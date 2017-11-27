@@ -14,56 +14,36 @@ namespace ProseTutorial {
         public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
         [WitnessFunction(nameof(Semantics.Substring), 1)]
-        public DisjunctiveExamplesSpec WitnessPositionPair(GrammarRule rule, ExampleSpec spec) {
+        public DisjunctiveExamplesSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec) {
             var result = new Dictionary<State, IEnumerable<object>>();
 
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var input = inputState[rule.Body[0]] as string;
                 var output = example.Value as string;
-                var occurrences = new List<Tuple<int, int>>();
+                var occurrences = new List<int>();
 
                 for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
-                    occurrences.Add(Tuple.Create(i, i + output.Length));
+                    occurrences.Add((int)i);
                 }
 
                 if (occurrences.Count == 0) return null;
-                result[inputState] = occurrences;
+                result[inputState] = occurrences.Cast<object>();
             }
             return new DisjunctiveExamplesSpec(result);
 
         }
 
-        [WitnessFunction(nameof(Semantics.PositionPair), 0)]
-        public DisjunctiveExamplesSpec WitnessPositionPairStartPosition(GrammarRule rule, DisjunctiveExamplesSpec spec) {
-            var result = new Dictionary<State, IEnumerable<object>>();
-            foreach (var example in spec.DisjunctiveExamples) {
+        [WitnessFunction(nameof(Semantics.Substring), 2, DependsOnParameters = new []{1})]
+        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec, ExampleSpec startSpec) {
+            var result = new Dictionary<State, object>();
+            foreach (var example in spec.Examples) {
                 State inputState = example.Key;
-
-                var positions = new List<int>();
-                foreach (Tuple<int, int> pair in example.Value) {
-                    positions.Add(pair.Item1);
-                }
-                if (positions.Count == 0) return null;
-                result[inputState] = positions.Cast<object>();
+                var output = example.Value as string;
+                var start = (int) startSpec.Examples[inputState];
+                result[inputState] = start + output.Length;
             }
-            return DisjunctiveExamplesSpec.From(result);
-        }
-
-        [WitnessFunction(nameof(Semantics.PositionPair), 1)]
-        public DisjunctiveExamplesSpec WitnessPositionPairEndPosition(GrammarRule rule, DisjunctiveExamplesSpec spec) {
-            var result = new Dictionary<State, IEnumerable<object>>();
-            foreach (var example in spec.DisjunctiveExamples) {
-                State inputState = example.Key;
-
-                var positions = new List<int>();
-                foreach (Tuple<int, int> pair in example.Value) {
-                    positions.Add(pair.Item2);
-                }
-                if (positions.Count == 0) return null;
-                result[inputState] = positions.Cast<object>();
-            }
-            return DisjunctiveExamplesSpec.From(result);
+            return new ExampleSpec(result);
         }
 
         /// <summary>
