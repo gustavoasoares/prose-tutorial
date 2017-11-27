@@ -40,8 +40,8 @@ namespace ProseTutorial {
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
                 var output = example.Value as string;
-                var start = (int) startSpec.Examples[inputState];
-                result[inputState] = start + output.Length;
+                var start = (int)startSpec.Examples[inputState];
+                //result[inputState] = start + output.Length;
             }
             return new ExampleSpec(result);
         }
