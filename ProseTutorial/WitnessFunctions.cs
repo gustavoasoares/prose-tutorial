@@ -62,7 +62,7 @@ namespace ProseTutorial {
         }
 
         [WitnessFunction(nameof(Semantics.AbsPos), 1)]
-        public DisjunctiveExamplesSpec WitnessK(GrammarRule rule, ExampleSpec spec) {
+        public ExampleSpec WitnessK(GrammarRule rule, ExampleSpec spec) {
             var result = new Dictionary<State, object>();
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
