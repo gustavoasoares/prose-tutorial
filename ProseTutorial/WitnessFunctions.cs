@@ -13,8 +13,18 @@ namespace ProseTutorial {
     public class WitnessFunctions : DomainLearningLogic {
         public WitnessFunctions(Grammar grammar) : base(grammar) { }
 
+        /// <summary>
+        /// This witness function should deduce the first position for the Substring operator
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="spec"></param>
+        /// <returns>Since there may be more than one occurrence of the output in the input string, 
+        /// there may be more than one spec for the start position, which is specified using DisjunctiveExamplesSpec
+        /// </returns>
         [WitnessFunction(nameof(Semantics.Substring), 1)]
         public DisjunctiveExamplesSpec WitnessStartPosition(GrammarRule rule, ExampleSpec spec) {
+            //the spec on the first position for each input state will have type IEnumerable<object> since we may have 
+            //more than one possible output
             var result = new Dictionary<State, IEnumerable<object>>();
 
             foreach (var example in spec.Examples) {
@@ -23,9 +33,14 @@ namespace ProseTutorial {
                 var output = example.Value as string;
                 var occurrences = new List<int>();
 
-                for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
-                    occurrences.Add((int)i);
-                }
+                ///////////////////////////////////////////////////////////////////////
+                //TODO replace the following line by the commented out for-loop bellow where we identify all start positions 
+                //and add each one to the occurrences list. 
+                ///////////////////////////////////////////////////////////////////////
+                occurrences.Add(input.IndexOf(output));
+                //for (int i = input.IndexOf(output);i >= 0; i = input.IndexOf(output, i + 1)) {
+                //    occurrences.Add((int)i);
+                //}
 
                 if (occurrences.Count == 0) return null;
                 result[inputState] = occurrences.Cast<object>();
