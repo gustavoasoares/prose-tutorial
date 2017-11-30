@@ -58,8 +58,28 @@ namespace ProseTutorial {
             Assert.AreEqual("16", output);
             output = firstProgram.Invoke(secondInput) as string;
             Assert.AreEqual("12", output);
+        }
+
+        [TestMethod]
+        public void TestLearnSubstringPositiveAbsPosSecOcurrenceOneExp() {
+            var grammar = DSLCompiler.
+                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+            var prose = ConfigureSynthesis(grammar.Value);
+
+            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
+            var examples = new Dictionary<State, object> { { firstInput, "16" } };
+            var spec = new ExampleSpec(examples);
+
+            var learnedSet = prose.LearnGrammar(spec);
+
+            var programs = learnedSet.RealizedPrograms;
+            var output = programs.First().Invoke(firstInput) as string;
+            Assert.AreEqual("16", output);
+
+            //checks whether the total number of synthesized programs was exactly 2 for this ambiguous example. 
             Assert.AreEqual(2, programs.Count());
         }
+
 
         [TestMethod]
         public void TestLearnSubstringNegativeAbsPos() {
