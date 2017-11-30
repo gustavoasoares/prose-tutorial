@@ -52,7 +52,7 @@ namespace ProseTutorialApp {
             }           
         }
 
-        private static new Dictionary<State, object> examples = new Dictionary<State, object>();
+        private static Dictionary<State, object> examples = new Dictionary<State, object>();
         private static ProgramNode topProgram;
 
         private static void LearnFromNewExample()
