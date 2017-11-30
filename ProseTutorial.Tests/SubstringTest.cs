@@ -6,18 +6,20 @@ using Microsoft.ProgramSynthesis.Compiler;
 using Microsoft.ProgramSynthesis.Learning;
 using Microsoft.ProgramSynthesis.Specifications;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.ProgramSynthesis.AST;
 using Microsoft.ProgramSynthesis.Learning.Strategies;
-using Microsoft.ProgramSynthesis.Learning.Logging;
 
 namespace ProseTutorial {
     [TestClass]
     public class SubstringTest {
+
+        private const string grammarPath = "../../../ProseTutorial/grammar/substring.grammar";
+
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPos() {
-            //set up the grammar 
+            //parse grammar file 
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
+            //configure the prose engine 
             var prose = ConfigureSynthesis(grammar.Value);
 
             //create the example
@@ -39,71 +41,39 @@ namespace ProseTutorial {
 
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPosSecOcurrence() {
-            //set up the grammar 
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            //create the example
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
             var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "14-Jan-2012");
             var examples = new Dictionary<State, object> { { firstInput, "16" }, { secondInput, "12" } };
             var spec = new ExampleSpec(examples);
 
-            //learn the set of programs that satisfy the spec 
             var learnedSet = prose.LearnGrammar(spec);
 
-            //run the first synthesized program in the same input and check if 
-            //the output is correct
             var programs = learnedSet.RealizedPrograms;
-            var output = programs.First().Invoke(firstInput) as string;
+            var firstProgram = programs.First();
+            var output = firstProgram.Invoke(firstInput) as string;
             Assert.AreEqual("16", output);
-            output = programs.First().Invoke(secondInput) as string;
+            output = firstProgram.Invoke(secondInput) as string;
             Assert.AreEqual("12", output);
-        }
-
-        [TestMethod]
-        public void TestLearnSubstringPositiveAbsPosSecOcurrenceOneExp() {
-            //set up the grammar 
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
-            var prose = ConfigureSynthesis(grammar.Value);
-
-            //create the example
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
-            var examples = new Dictionary<State, object> { { firstInput, "16" } };
-            var spec = new ExampleSpec(examples);
-
-            //learn the set of programs that satisfy the spec 
-            var learnedSet = prose.LearnGrammar(spec);
-
-            //run the first synthesized program in the same input and check if 
-            //the output is correct
-            var programs = learnedSet.RealizedPrograms;
-            var output = programs.First().Invoke(firstInput) as string;
-            Assert.AreEqual("16", output);
             Assert.AreEqual(2, programs.Count());
         }
 
-
         [TestMethod]
         public void TestLearnSubstringNegativeAbsPos() {
-            //set up the grammar 
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            //create the examples
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
             var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Titus Barik)");
             var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares" }, { secondInput, "Titus Barik" } };
             var spec = new ExampleSpec(examples);
 
-            //learn the set of programs that satisfy the spec 
             var learnedSet = prose.LearnGrammar(spec);
 
-            //run the first synthesized program in the same input and check if 
-            //the output is correct
             var programs = learnedSet.RealizedPrograms;
             var output = programs.First().Invoke(firstInput) as string;
             Assert.AreEqual("Gustavo Soares", output);
@@ -113,21 +83,14 @@ namespace ProseTutorial {
 
         [TestMethod]
         public void TestLearnSubstringNegativeAbsPosRanking() {
-            //set up the grammar 
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            //create the example
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
             var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares" } };
             var spec = new ExampleSpec(examples);
 
-            //learn the set of programs that satisfy the spec 
-            var learnedSet = prose.LearnGrammar(spec);
-
-            //run the first synthesized program in the same input and check if 
-            //the output is correct
             var scoreFeature = new RankingScore(grammar.Value);
             var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 1, null);
             var topProgram = topPrograms.First();
@@ -142,7 +105,7 @@ namespace ProseTutorial {
         [TestMethod]
         public void TestLearnSubstringTwoExamples() {
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
@@ -161,7 +124,7 @@ namespace ProseTutorial {
         [TestMethod]
         public void TestLearnSubstringOneExample() {
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
             var input = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
