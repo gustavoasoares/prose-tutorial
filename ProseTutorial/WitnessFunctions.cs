@@ -38,8 +38,8 @@ namespace ProseTutorial {
                 //and add each one to the occurrences list. 
                 ///////////////////////////////////////////////////////////////////////
                 occurrences.Add(input.IndexOf(output));
-                //for (int i = input.IndexOf(output);i >= 0; i = input.IndexOf(output, i + 1)) {
-                //    occurrences.Add((int)i);
+                //for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
+                //    occurrences.Add(i);
                 //}
 
                 if (occurrences.Count == 0) return null;
