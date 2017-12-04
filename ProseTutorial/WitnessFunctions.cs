@@ -36,7 +36,7 @@ namespace ProseTutorial
                 var occurrences = new List<int>();
 
                 for (int i = input.IndexOf(output); i >= 0; i = input.IndexOf(output, i + 1)) {
-                    occurrences.Add((int)i);
+                    occurrences.Add(i);
                 }
 
                 if (occurrences.Count == 0) return null;
