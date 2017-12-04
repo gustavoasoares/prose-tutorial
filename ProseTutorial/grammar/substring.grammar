@@ -9,6 +9,7 @@ language Substring;
 @input string v;
 
 @start string program := Substring(v, pos, pos);
+
 int pos := AbsPos(v, k) | RelPos(v, rr);
 
 int k; 

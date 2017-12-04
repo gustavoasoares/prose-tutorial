@@ -4,8 +4,6 @@ using Microsoft.ProgramSynthesis.Compiler;
 using Microsoft.ProgramSynthesis.Learning;
 using Microsoft.ProgramSynthesis.Learning.Strategies;
 using Microsoft.ProgramSynthesis.Specifications;
-using Microsoft.ProgramSynthesis.Wrangling.Constraints;
-using Newtonsoft.Json;
 using ProseTutorial;
 using System;
 using System.Collections.Generic;
@@ -18,46 +16,55 @@ namespace ProseTutorialApp {
             ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar").Value;
         static SynthesisEngine prose;
 
-
+        private static Dictionary<State, object> examples = new Dictionary<State, object>();
+        private static ProgramNode topProgram;
 
         static void Main(string[] args) {
+
             prose = ConfigureSynthesis(grammar);
-            
             string menu = @"Select one of the options: 
 1 - provide new example
 2 - run top synthesized program on a new input
 3 - exit";
-            int option = 0; 
-            while(option != 3)
-            {
+            int option = 0;
+            while (option != 3) {
                 Console.Out.WriteLine(menu);
-                try
-                {
+                try {
                     option = Int16.Parse(Console.ReadLine());
-                } catch(Exception)
-                {
+                }
+                catch (Exception) {
                     Console.Out.WriteLine("Invalid option. Try again.");
                     continue;
                 }
-                switch (option)
-                {
-                    case 1: LearnFromNewExample();
-                        break;
-                    case 2: RunOnNewInput();
-                        break;
-                    default:
-                        Console.Out.WriteLine("Invalid option. Try again.");
-                        break;
+
+                try {
+                    RunOption(option); 
                 }
-            }           
+                catch (Exception e) {
+                    Console.Error.WriteLine("Something went wrong...");
+                    Console.Error.WriteLine("Exception message: " + e.Message);
+                }
+            }
         }
 
-        private static new Dictionary<State, object> examples = new Dictionary<State, object>();
-        private static ProgramNode topProgram;
+        private static void RunOption(int option) {
+            switch (option) {
+                case 1:
+                    LearnFromNewExample();
+                    break;
+                case 2:
+                    RunOnNewInput();
+                    break;
+                default:
+                    Console.Out.WriteLine("Invalid option. Try again.");
+                    break;
+            }
+        }
+
 
         private static void LearnFromNewExample()
         {
-            Console.Out.WriteLine("Provide a new input-output example: (e.g., \"(Gustavo Soares)\",\"Gustavo Soares\")");
+            Console.Out.Write("Provide a new input-output example (e.g., \"(Gustavo Soares)\",\"Gustavo Soares\"): ");
             try
             {
                 string input = Console.ReadLine();
@@ -68,9 +75,9 @@ namespace ProseTutorialApp {
 
                 if ((startFirstExample >= endFirstExample) || (startSecondExample >= endSecondExample))
                 {
-                    Console.Out.WriteLine("Invalid example format. Please try again. input and out should be between quotes");
-                    return;
+                    throw new Exception("Invalid example format. Please try again. input and out should be between quotes"); 
                 }
+
                 var inputExample = input.Substring(startFirstExample, endFirstExample - startFirstExample - 1);
                 var outputExample = input.Substring(startSecondExample, endSecondExample - startSecondExample - 1);
 
@@ -78,22 +85,21 @@ namespace ProseTutorialApp {
                 examples.Add(inputState, outputExample);
             } catch(Exception)
             {
-                Console.Out.WriteLine("Invalid example format. Please try again. input and out should be between quotes");
-                return;
+                throw new Exception("Invalid example format. Please try again. input and out should be between quotes");
             }
+
             var spec = new ExampleSpec(examples);
             Console.Out.WriteLine("Learning a program for examples:");
             foreach (var example in examples)
             {
-                Console.WriteLine(example.Key + "=>" + example.Value);
+                Console.WriteLine("\"" + example.Key.Bindings.First().Value + "\" -> \"" + example.Value + "\"");
             }
 
             var scoreFeature = new RankingScore(grammar);
             var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 4, null);
             if (topPrograms.IsEmpty())
             {
-                Console.Out.WriteLine("No program was found for this specification.");
-                return; 
+                throw new Exception("No program was found for this specification.");
             }
 
             topProgram = topPrograms.First();
@@ -113,22 +119,23 @@ namespace ProseTutorialApp {
         {
             if (topProgram == null)
             {
-                Console.Out.WriteLine("No program was synthesized. Try to provide new examples first.");
-                return; 
+                throw new Exception("No program was synthesized. Try to provide new examples first.");
             }
-
-            Console.Out.WriteLine("Insert a new input:");
-            var newInput = Console.ReadLine();
             Console.Out.WriteLine("Top program: " + topProgram);
-            Console.Out.WriteLine("Output of the top program on the new input: ");
+
             try
             {
+                Console.Out.Write("Insert a new input: ");
+                var newInput = Console.ReadLine();
+                var startFirstExample = newInput.IndexOf("\"") + 1;
+                var endFirstExample = newInput.IndexOf("\"", startFirstExample + 1) + 1;
+                newInput = newInput.Substring(startFirstExample, endFirstExample - startFirstExample - 1);
                 var newInputState = State.CreateForExecution(grammar.InputSymbol, newInput);
-                Console.Out.WriteLine(topProgram.Invoke(newInputState));
+                Console.Out.WriteLine("RESULT: \"" + newInput + "\" -> \"" + topProgram.Invoke(newInputState) + "\"");
             }
             catch (Exception)
             {
-                Console.Out.WriteLine("The execution of the program on this input thrown an exception");
+                throw new Exception("The execution of the program on this input thrown an exception"); 
             }
         }
 
