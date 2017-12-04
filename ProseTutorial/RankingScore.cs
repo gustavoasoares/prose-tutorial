@@ -24,8 +24,6 @@ namespace ProseTutorial
         [FeatureCalculator(nameof(Semantics.RelPos))]
         public static double RelPos(double x, double rr) => rr;
 
-        //TODO update this ranking function to produce a higher value than the ones in AbsPos. 
-        //In this way, the ranking system will favor RelPos over AbsPos.
         [FeatureCalculator("rr", Method = CalculationMethod.FromLiteral)]
         public static double RR(Tuple<Regex, Regex> tuple) => 0;
     }
