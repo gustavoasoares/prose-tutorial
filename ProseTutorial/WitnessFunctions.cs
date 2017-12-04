@@ -49,27 +49,24 @@ namespace ProseTutorial {
 
         }
 
-        /// <summary>
-        /// This is a conditional witness function. In the presence of multiple occurrences of the output string in the input string,
-        /// We can only write a witness function for an end position for each start position. Thus, our witness function for the end position
-        /// is conditional on the start position: in addition to an outer spec, it takes an additional input – a spec on its prerequisite start position parameter.
-        /// </summary>
-        /// <param name="rule"></param>
-        /// <param name="spec"></param>
-        /// <param name="startSpec">The specification of the start position parameter</param>
-        /// <returns></returns>
-        [WitnessFunction(nameof(Semantics.Substring), 2, DependsOnParameters = new []{1})]
-        public ExampleSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec, ExampleSpec startSpec) {
-            var result = new Dictionary<State, object>();
+        [WitnessFunction(nameof(Semantics.Substring), 2)]
+        public DisjunctiveExamplesSpec WitnessEndPosition(GrammarRule rule, ExampleSpec spec) {
+            var result = new Dictionary<State, IEnumerable<object>>();
             foreach (var example in spec.Examples) {
                 State inputState = example.Key;
+                var input = inputState[rule.Body[0]] as string;
                 var output = example.Value as string;
-                //get the spec on the start position 
-                var start = (int)startSpec.Examples[inputState];
-                //TODO given the spec on the start position, write a spec on the end position
-                //result[inputState] = ...;
+                var occurrences = new List<int>();
+                ///////////////////////////////////////////////////////////////////////
+                //TODO replace the following line by a for-loop where we identify all end positions 
+                //as we did in the previous witness function
+                ///////////////////////////////////////////////////////////////////////
+                occurrences.Add(input.IndexOf(output) + output.Length);
+
+                if (occurrences.Count == 0) return null;
+                result[inputState] = occurrences.Cast<object>();
             }
-            return new ExampleSpec(result);
+            return new DisjunctiveExamplesSpec(result);
         }
 
         [WitnessFunction(nameof(Semantics.AbsPos), 1)]
