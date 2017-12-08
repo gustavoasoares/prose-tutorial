@@ -81,7 +81,7 @@ namespace ProseTutorialApp {
                 var inputExample = input.Substring(startFirstExample, endFirstExample - startFirstExample - 1);
                 var outputExample = input.Substring(startSecondExample, endSecondExample - startSecondExample - 1);
 
-                var inputState = State.CreateForExecution(grammar.InputSymbol, inputExample);
+                var inputState = State.Create(grammar.InputSymbol, inputExample);
                 examples.Add(inputState, outputExample);
             } catch(Exception)
             {
@@ -130,7 +130,7 @@ namespace ProseTutorialApp {
                 var startFirstExample = newInput.IndexOf("\"") + 1;
                 var endFirstExample = newInput.IndexOf("\"", startFirstExample + 1) + 1;
                 newInput = newInput.Substring(startFirstExample, endFirstExample - startFirstExample - 1);
-                var newInputState = State.CreateForExecution(grammar.InputSymbol, newInput);
+                var newInputState = State.Create(grammar.InputSymbol, newInput);
                 Console.Out.WriteLine("RESULT: \"" + newInput + "\" -> \"" + topProgram.Invoke(newInputState) + "\"");
             }
             catch (Exception)
