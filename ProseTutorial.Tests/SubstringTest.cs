@@ -5,8 +5,8 @@ using Microsoft.ProgramSynthesis;
 using Microsoft.ProgramSynthesis.Compiler;
 using Microsoft.ProgramSynthesis.Learning;
 using Microsoft.ProgramSynthesis.Specifications;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.ProgramSynthesis.Learning.Strategies;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ProseTutorial {
     [TestClass]
@@ -23,7 +23,7 @@ namespace ProseTutorial {
             var prose = ConfigureSynthesis(grammar.Value);
 
             //create the example
-            var input = State.CreateForExecution(grammar.Value.InputSymbol, "19-Feb-1960");
+            var input = State.Create(grammar.Value.InputSymbol, "19-Feb-1960");
             var examples = new Dictionary<State, object> { { input, "Feb" } };
             var spec = new ExampleSpec(examples);
 
@@ -45,8 +45,8 @@ namespace ProseTutorial {
                 ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
-            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "14-Jan-2012");
+            var firstInput = State.Create(grammar.Value.InputSymbol, "16-Feb-2016");
+            var secondInput = State.Create(grammar.Value.InputSymbol, "14-Jan-2012");
             var examples = new Dictionary<State, object> { { firstInput, "16" }, { secondInput, "12" } };
             var spec = new ExampleSpec(examples);
 
@@ -66,7 +66,7 @@ namespace ProseTutorial {
                 ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
+            var firstInput = State.Create(grammar.Value.InputSymbol, "16-Feb-2016");
             var examples = new Dictionary<State, object> { { firstInput, "16" } };
             var spec = new ExampleSpec(examples);
 
@@ -87,8 +87,8 @@ namespace ProseTutorial {
                 ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
-            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Titus Barik)");
+            var firstInput = State.Create(grammar.Value.InputSymbol, "(Gustavo Soares)");
+            var secondInput = State.Create(grammar.Value.InputSymbol, "(Titus Barik)");
             var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares" }, { secondInput, "Titus Barik" } };
             var spec = new ExampleSpec(examples);
 
@@ -107,7 +107,7 @@ namespace ProseTutorial {
                 ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
+            var firstInput = State.Create(grammar.Value.InputSymbol, "(Gustavo Soares)");
             var examples = new Dictionary<State, object> { { firstInput, "Gustavo Soares" } };
             var spec = new ExampleSpec(examples);
 
@@ -117,7 +117,7 @@ namespace ProseTutorial {
 
             var output = topProgram.Invoke(firstInput) as string;
             Assert.AreEqual("Gustavo Soares", output);
-            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Titus Barik)");
+            var secondInput = State.Create(grammar.Value.InputSymbol, "(Titus Barik)");
             output = topProgram.Invoke(secondInput) as string;
             Assert.AreEqual("Titus Barik", output);
         }
@@ -128,8 +128,8 @@ namespace ProseTutorial {
                 ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
-            var secondInput = State.CreateForExecution(grammar.Value.InputSymbol, "Sumit Gulwani");
+            var firstInput = State.Create(grammar.Value.InputSymbol, "Gustavo Soares");
+            var secondInput = State.Create(grammar.Value.InputSymbol, "Sumit Gulwani");
             var examples = new Dictionary<State, object> { { firstInput, "Soares" }, { secondInput, "Gulwani" } };
             var spec = new ExampleSpec(examples);
 
@@ -147,7 +147,7 @@ namespace ProseTutorial {
                 ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
-            var input = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
+            var input = State.Create(grammar.Value.InputSymbol, "Gustavo Soares");
             var examples = new Dictionary<State, object> { { input, "Soares" } };
 
             var spec = new ExampleSpec(examples);
@@ -158,7 +158,7 @@ namespace ProseTutorial {
             var output = topProgram.Invoke(input) as string;
             Assert.AreEqual("Soares", output);
 
-            var input2 = State.CreateForExecution(grammar.Value.InputSymbol, "Sumit Gulwani");
+            var input2 = State.Create(grammar.Value.InputSymbol, "Sumit Gulwani");
             var output2 = topProgram.Invoke(input2) as string;
             Assert.AreEqual("Gulwani", output2);
         }
