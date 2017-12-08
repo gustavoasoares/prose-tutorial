@@ -13,7 +13,7 @@ namespace ProseTutorialApp {
     class Program {
 
         static Grammar grammar = DSLCompiler.
-            ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar").Value;
+            ParseGrammarFromFile("synthesis/grammar/substring.grammar").Value;
         static SynthesisEngine prose;
 
         private static Dictionary<State, object> examples = new Dictionary<State, object>();

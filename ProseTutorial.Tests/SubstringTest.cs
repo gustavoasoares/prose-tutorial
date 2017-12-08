@@ -12,7 +12,7 @@ namespace ProseTutorial {
     [TestClass]
     public class SubstringTest {
 
-        private const string grammarPath = "../../../ProseTutorial/grammar/substring.grammar";
+        private const string grammarPath = @"../../../../ProseTutorial/synthesis/grammar/substring.grammar";
 
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPos() {
@@ -63,7 +63,7 @@ namespace ProseTutorial {
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPosSecOcurrenceOneExp() {
             var grammar = DSLCompiler.
-                ParseGrammarFromFile("../../../ProseTutorial/grammar/substring.grammar");
+                ParseGrammarFromFile(grammarPath);
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
