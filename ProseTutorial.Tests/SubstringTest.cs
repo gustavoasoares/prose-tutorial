@@ -77,7 +77,7 @@ namespace ProseTutorial {
             Assert.AreEqual("16", output);
 
             //checks whether the total number of synthesized programs was exactly 2 for this ambiguous example. 
-            Assert.AreEqual(4, programs.Count());
+            Assert.AreEqual(8, programs.Count());
         }
 
 
