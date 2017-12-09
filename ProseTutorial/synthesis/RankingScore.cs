@@ -10,8 +10,6 @@ namespace ProseTutorial
     {
         public RankingScore(Grammar grammar) : base(grammar, "Score") { }
 
-        protected override double GetFeatureValueForVariable(VariableNode variable) => 0;
-
         [FeatureCalculator(nameof(Semantics.Substring))]
         public static double Substring(double v, double start, double end) => start * end;
 
@@ -19,12 +17,6 @@ namespace ProseTutorial
         public static double AbsPos(double v, double k) => k;
 
         [FeatureCalculator("k", Method = CalculationMethod.FromLiteral)]
-        public static double K(int k) => 1.0 / Math.Abs(k);
-
-        [FeatureCalculator(nameof(Semantics.RelPos))]
-        public static double RelPos(double x, double rr) => rr;
-
-        [FeatureCalculator("rr", Method = CalculationMethod.FromLiteral)]
-        public static double RR(Tuple<Regex, Regex> tuple) => 0;
+        public static double K(int k) => 1.0;
     }
 }
