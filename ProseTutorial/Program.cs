@@ -7,13 +7,19 @@ using Microsoft.ProgramSynthesis.Specifications;
 using ProseTutorial;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using Microsoft.ProgramSynthesis.VersionSpace;
 
 namespace ProseTutorialApp {
     class Program {
 
         static Grammar grammar = DSLCompiler.
-            ParseGrammarFromFile("synthesis/grammar/substring.grammar").Value;
+            Compile(new CompilerOptions() {
+                InputGrammarText = File.ReadAllText("../../../synthesis/grammar/substring.grammar"),
+                References = CompilerReference.FromAssemblyFiles(typeof(Program).GetTypeInfo().Assembly)
+            }).Value;
         static SynthesisEngine prose;
 
         private static Dictionary<State, object> examples = new Dictionary<State, object>();
@@ -96,16 +102,16 @@ namespace ProseTutorialApp {
             }
 
             var scoreFeature = new RankingScore(grammar);
-            var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 4, null);
-            if (topPrograms.IsEmpty())
+            ProgramSet topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 4, null);
+            if (topPrograms.IsEmpty)
             {
                 throw new Exception("No program was found for this specification.");
             }
 
-            topProgram = topPrograms.First();
+            topProgram = topPrograms.RealizedPrograms.First();
             Console.Out.WriteLine("Top 4 learned programs:");
             var counter = 1;
-            foreach (var program in topPrograms)
+            foreach (var program in topPrograms.RealizedPrograms)
             {
                 if (counter > 4) break;
                 Console.Out.WriteLine("==========================");
