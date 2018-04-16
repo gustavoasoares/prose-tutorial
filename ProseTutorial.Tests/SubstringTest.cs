@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.ProgramSynthesis;
 using Microsoft.ProgramSynthesis.Compiler;
+using Microsoft.ProgramSynthesis.Diagnostics;
 using Microsoft.ProgramSynthesis.Learning;
 using Microsoft.ProgramSynthesis.Specifications;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.ProgramSynthesis.Learning.Strategies;
+using ProseTutorialApp;
 
 namespace ProseTutorial {
     [TestClass]
     public class SubstringTest {
 
-        private const string grammarPath = @"../../../../ProseTutorial/synthesis/grammar/substring.grammar";
+        private const string GrammarPath = @"../../../../ProseTutorial/synthesis/grammar/substring.grammar";
 
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPos() {
             //parse grammar file 
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+            var grammar = CompileGrammar();
             //configure the prose engine 
             var prose = ConfigureSynthesis(grammar.Value);
 
@@ -37,12 +40,9 @@ namespace ProseTutorial {
             Assert.AreEqual("Feb", output);
         }
 
-
-
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPosSecOcurrence() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
@@ -62,8 +62,7 @@ namespace ProseTutorial {
 
         [TestMethod]
         public void TestLearnSubstringPositiveAbsPosSecOcurrenceOneExp() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "16-Feb-2016");
@@ -83,8 +82,7 @@ namespace ProseTutorial {
 
         [TestMethod]
         public void TestLearnSubstringNegativeAbsPos() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
@@ -103,8 +101,7 @@ namespace ProseTutorial {
 
         [TestMethod]
         public void TestLearnSubstringNegativeAbsPosRanking() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "(Gustavo Soares)");
@@ -113,7 +110,7 @@ namespace ProseTutorial {
 
             var scoreFeature = new RankingScore(grammar.Value);
             var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 1, null);
-            var topProgram = topPrograms.First();
+            var topProgram = topPrograms.RealizedPrograms.First();
 
             var output = topProgram.Invoke(firstInput) as string;
             Assert.AreEqual("Gustavo Soares", output);
@@ -123,9 +120,9 @@ namespace ProseTutorial {
         }
 
         [TestMethod]
-        public void TestLearnSubstringTwoExamples() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+        public void TestLearnSubstringTwoExamples()
+        {
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var firstInput = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
@@ -142,9 +139,9 @@ namespace ProseTutorial {
         }
 
         [TestMethod]
-        public void TestLearnSubstringOneExample() {
-            var grammar = DSLCompiler.
-                ParseGrammarFromFile(grammarPath);
+        public void TestLearnSubstringOneExample()
+        {
+            var grammar = CompileGrammar();
             var prose = ConfigureSynthesis(grammar.Value);
 
             var input = State.CreateForExecution(grammar.Value.InputSymbol, "Gustavo Soares");
@@ -154,7 +151,7 @@ namespace ProseTutorial {
 
             var scoreFeature = new RankingScore(grammar.Value);
             var topPrograms = prose.LearnGrammarTopK(spec, scoreFeature, 1, null);
-            var topProgram = topPrograms.First();
+            var topProgram = topPrograms.RealizedPrograms.First();
             var output = topProgram.Invoke(input) as string;
             Assert.AreEqual("Soares", output);
 
@@ -170,6 +167,14 @@ namespace ProseTutorial {
             var synthesisConfig = new SynthesisEngine.Config { Strategies = synthesisExtrategies };
             var prose = new SynthesisEngine(grammar, synthesisConfig);
             return prose;
+        }
+
+        private static Result<Grammar> CompileGrammar() {
+            return DSLCompiler.
+                Compile(new CompilerOptions() {
+                    InputGrammarText = File.ReadAllText(GrammarPath),
+                    References = CompilerReference.FromAssemblyFiles(typeof(Semantics).GetTypeInfo().Assembly)
+                });
         }
     }
 }
